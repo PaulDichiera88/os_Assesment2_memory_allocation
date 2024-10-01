@@ -4,9 +4,15 @@
 #include <cstddef> // for std::size_t
 
 struct Allocation {
-    std::size_t size; // memory chunk size
-    void* space;    //pointer to memory location
+    std::size_t size;
+    void* space;
+
+    // Define the equality operator for Allocation
+    bool operator==(const Allocation& other) const {
+        return size == other.size && space == other.space;
+    }
 };
+
 
 // allocation and deallocation functions declaration
 void* alloc(std::size_t chunk_size);

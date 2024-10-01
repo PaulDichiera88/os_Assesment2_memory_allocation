@@ -1,6 +1,4 @@
 #include "memory_manager.h"
-#include "first_fit.cpp"
-#include "best_fit.cpp"
 #include <iostream>
 #include <fstream>
 #include <string>
