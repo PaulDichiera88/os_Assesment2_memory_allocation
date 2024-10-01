@@ -26,6 +26,7 @@ int main(int argc, char* argv[]) {
     }
 
     std::string line;
+
     while (std::getline(inputFile, line)) {
         if (line.rfind("alloc:", 0) == 0) {
             std::string size_str = line.substr(6);
@@ -37,9 +38,13 @@ int main(int argc, char* argv[]) {
                 std::cerr << "Allocation failed for " << size << " bytes." << std::endl;
             }
         } else if (line == "dealloc") {
-            // Deallocate last allocated chunk
-            std::cout << "Deallocating memory." << std::endl;
-            // bestFitDealloc(/* appropriate chunk */);
+            if (!allocatedList.empty()) {
+                void* chunk = allocatedList.back().space;
+                bestFitDealloc(chunk);
+                std::cout << "Deallocated memory." << std::endl;
+            } else {
+                std::cerr << "No allocated chunks to deallocate." << std::endl;
+            }
         }
     }
 
