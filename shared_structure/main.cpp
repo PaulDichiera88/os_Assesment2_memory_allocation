@@ -2,13 +2,15 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <filesystem>
+
 
 int main(int argc, char* argv[]) {
 
     // file and commandline input validations 
     std::cout <<"** Performing Checks **" << std::endl;
 
-    if (argc !=2){
+    if (argc !=3){
         std::cout << "required number of commandline intputs incorrect, <allocation type> <datafile>" << std::endl;
         return EXIT_FAILURE;
     }
@@ -36,6 +38,7 @@ int main(int argc, char* argv[]) {
         
         // Deallocate memory using First Fit
         dealloc(chunk1);
+
     }else if(allocType == "bestfit"){
         // Set the allocation strategy to Best Fit
         setAllocationStrategy(bestFitAlloc, bestFitDealloc);
