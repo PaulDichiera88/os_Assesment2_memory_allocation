@@ -5,10 +5,12 @@
 #include <filesystem>
 
 int main(int argc, char* argv[]) {
+
     std::cout << "** First Fit Allocation **" << std::endl;
+    std::cout << "** Performing Checks **" << std::endl;
 
     if (argc != 2) {
-        std::cerr << "Usage: <datafile>" << std::endl;
+        std::cerr << "Required input: <datafile> " << std::endl;
         return EXIT_FAILURE;
     }
 
