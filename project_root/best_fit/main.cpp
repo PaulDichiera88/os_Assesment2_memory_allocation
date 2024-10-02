@@ -26,16 +26,33 @@ int main(int argc, char* argv[]) {
     }
 
     std::string line;
+    std::size_t size;
+    bool valid = true;
 
     while (std::getline(inputFile, line)) {
+        valid = true; // reset valid conversion check
+
         if (line.rfind("alloc:", 0) == 0) {
             std::string size_str = line.substr(6);
-            std::size_t size = std::stoul(size_str);
-            void* chunk = bestFitAlloc(size);
-            if (chunk != nullptr) {
-                std::cout << "Allocated " << size << " bytes." << std::endl;
-            } else {
-                std::cerr << "Allocation failed for " << size << " bytes." << std::endl;
+            try{
+                size = std::stoul(size_str);
+            } catch (const std::invalid_argument& e){
+                // handle error
+                std::cerr << "Invalid size format encountered in data file: " << size_str << std::endl;
+                valid = false;
+            } catch (const std::out_of_range& e){
+                // handle error
+                std::cerr << "Encountered Size value that is out of range: " << size_str << std::endl;
+                valid = false;
+            }
+
+            if(valid){
+                void* chunk = bestFitAlloc(size);
+                if (chunk != nullptr) {
+                    std::cout << "Allocated " << size << " bytes." << std::endl;
+                } else {
+                    std::cerr << "Allocation failed for " << size << " bytes." << std::endl;
+                }
             }
         } else if (line == "dealloc") {
             if (!allocatedList.empty()) {
@@ -46,7 +63,7 @@ int main(int argc, char* argv[]) {
                 std::cerr << "No allocated chunks to deallocate." << std::endl;
             }
         }
-    }
+    }     
 
     inputFile.close();
     return 0;
