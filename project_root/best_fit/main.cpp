@@ -3,9 +3,13 @@
 #include <fstream>
 #include <string>
 #include <filesystem>
+#include <list>
 
 int main(int argc, char* argv[]) {
     std::cout << "** Best Fit Allocation **" << std::endl;
+    std::cout << std::endl;
+    std::cout << "** Performing Checks **" << std::endl;
+    std::cout << std::endl;
 
     if (argc != 2) {
         std::cerr << "Usage: <datafile>" << std::endl;
@@ -49,7 +53,7 @@ int main(int argc, char* argv[]) {
             if(valid){
                 void* chunk = bestFitAlloc(size);
                 if (chunk != nullptr) {
-                    std::cout << "Allocated " << size << " bytes." << std::endl;
+                    // std::cout << "Allocated " << size << " bytes." << std::endl;
                 } else {
                     std::cerr << "Allocation failed for " << size << " bytes." << std::endl;
                 }
@@ -58,12 +62,23 @@ int main(int argc, char* argv[]) {
             if (!allocatedList.empty()) {
                 void* chunk = allocatedList.back().space;
                 bestFitDealloc(chunk);
-                std::cout << "Deallocated memory." << std::endl;
+                // std::cout << "Deallocated memory." << std::endl;
             } else {
                 std::cerr << "No allocated chunks to deallocate." << std::endl;
             }
         }
     }     
+
+    std::cout << "** Allocation Summary **" << std::endl;
+    std::cout << std::endl;
+    for(auto it = allocatedList.begin(); it != allocatedList.end(); it++){
+        std::cout << "memory address: " << it->space << "," << " allocated space: " << it->total_size << "," << " space used: " << it->requested_size << std::endl;
+    }
+    std::cout << std::endl;
+    std::cout << "** Free List Summary **" << std::endl;
+    for(auto it = freeList.begin(); it != freeList.end(); it++){
+        std::cout << "memory address: " << it->space << "," << " allocated space: " << it->total_size << std::endl;
+    }
 
     inputFile.close();
     return 0;

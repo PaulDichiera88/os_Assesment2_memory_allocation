@@ -1,11 +1,11 @@
 alloc: 141
 alloc: 83
 alloc: 26
+alloc: 128
+alloc: 32
 alloc: 480
-alloc: 422
-alloc: 365
-alloc: 249
-alloc: 134
+alloc: 64
+alloc: 512
 dealloc
 dealloc
 alloc: 415

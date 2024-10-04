@@ -7,7 +7,9 @@
 int main(int argc, char* argv[]) {
 
     std::cout << "** First Fit Allocation **" << std::endl;
+    std::cout << std::endl;
     std::cout << "** Performing Checks **" << std::endl;
+    std::cout << std::endl;
 
     if (argc != 2) {
         std::cerr << "Required input: <datafile> " << std::endl;
@@ -35,7 +37,7 @@ int main(int argc, char* argv[]) {
             std::size_t size = std::stoul(size_str);
             void* chunk = firstFitAlloc(size);
             if (chunk != nullptr) {
-                std::cout << "Allocated " << size << " bytes." << std::endl;
+                // std::cout << "Allocated " << size << " bytes." << std::endl;
             } else {
                 std::cerr << "Allocation failed for " << size << " bytes." << std::endl;
             }
@@ -43,11 +45,21 @@ int main(int argc, char* argv[]) {
             if (!allocatedList.empty()) {
                 void* chunk = allocatedList.back().space;
                 firstFitDealloc(chunk);
-                std::cout << "Deallocated memory." << std::endl;
+                // std::cout << "Deallocated memory." << std::endl;
             } else {
                 std::cerr << "No allocated chunks to deallocate." << std::endl;
             }
         }
+    }
+
+    std::cout << "** Allocation Summary **" << std::endl;
+    for(auto it = allocatedList.begin(); it != allocatedList.end(); it++){
+        std::cout << "memory address: " << it->space << "," << " allocated space: " << it->total_size << "," << " space used: " << it->requested_size << std::endl;
+    }
+    std::cout << std::endl;
+    std::cout << "** Free List Summary **" << std::endl;
+    for(auto it = freeList.begin(); it != freeList.end(); it++){
+        std::cout << "memory address: " << it->space << "," << " allocated space: " << it->total_size << std::endl;
     }
 
     inputFile.close();
