@@ -9,31 +9,49 @@ std::list<Allocation> freeList;
 const std::size_t PARTITION_SIZES[] = {32, 64, 128, 256, 512};
 
 // First Fit allocation function
-void* firstFitAlloc(std::size_t requested_size) {
-    std::size_t total_size = findPartitionSize(requested_size);
+void* alloc(std::size_t chunk_size) {
+    Allocation* selected_block = firstFitSearch(chunk_size);
 
-    for (auto it = freeList.begin(); it != freeList.end(); ++it) {
-        if (it->total_size >= total_size) {
-            Allocation newAlloc = *it;
-            freeList.erase(it);
-            allocatedList.push_back(newAlloc);
-            return newAlloc.space;
+        if (selected_block != nullptr) {
+        std::cout << "Best fit found: " << selected_block->total_size << " bytes, at address: " << selected_block->space << std::endl;
+
+        // Move the selected block to allocatedList but only after ensuring it's valid
+        void* allocated_space = selected_block->space;  // Save the space pointer first
+        if (allocated_space != nullptr) {
+            // Now safely move the block to the allocated list
+            allocatedList.push_back(*selected_block);
+
+            // Remove the block from the free list after confirming it's valid
+            auto it = std::find(freeList.begin(), freeList.end(), *selected_block);  // Find the element in the list
+            if (it != freeList.end()) {
+                std::cout << "Removing block: " << selected_block->space << " from free list" << std::endl;
+                freeList.erase(it);  // Erase the specific element from the freeList
+            }
+
+            std::cout << "Allocating block: " << selected_block->space << std::endl;
+            return allocated_space;  // Return the space pointer
+        } else {
+            std::cerr << "Error: Unable to allocate memory. Space pointer is null." << std::endl;
+            return nullptr;
         }
     }
 
-    void* newSpace = sbrk(total_size);
-    if (newSpace == (void*)-1) {
+    std::size_t total_size = findPartitionSize(chunk_size);
+
+    void* new_memory = sbrk(total_size);
+
+    if (new_memory == (void*)-1) {
         std::cerr << "Memory allocation failed!" << std::endl;
         return nullptr;
     }
 
-    Allocation newAlloc = { requested_size, total_size, newSpace };
+    Allocation newAlloc = {chunk_size, total_size, new_memory };
     allocatedList.push_back(newAlloc);
-    return newSpace;
+    return new_memory;
 }
 
 // First Fit deallocation function
-void firstFitDealloc(void* chunk) {
+void dealloc(void* chunk) {
     for (auto it = allocatedList.begin(); it != allocatedList.end(); ++it) {
         if (it->space == chunk) {
             Allocation freeChunk = *it;
@@ -55,4 +73,13 @@ std::size_t findPartitionSize(std::size_t requested_size) {
     }
     // If requested_size exceeds all defined partition sizes, return the largest size
     return PARTITION_SIZES[sizeof(PARTITION_SIZES) / sizeof(PARTITION_SIZES[0]) - 1];
+}
+
+Allocation* firstFitSearch(std::size_t chunk_size) {
+    for (auto& block : freeList) {
+        if (block.total_size >= chunk_size) {
+            return &block;
+        }
+    }
+    return nullptr;
 }

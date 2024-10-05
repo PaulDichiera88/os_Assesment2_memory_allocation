@@ -1,10 +1,10 @@
 alloc: 141
 alloc: 83
 alloc: 26
-alloc: 128
-alloc: 32
+alloc: 120
+alloc: 88
 alloc: 480
-alloc: 64
+alloc: 90
 alloc: 512
 dealloc
 dealloc

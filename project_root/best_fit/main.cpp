@@ -51,17 +51,17 @@ int main(int argc, char* argv[]) {
             }
 
             if(valid){
-                void* chunk = bestFitAlloc(size);
+                void* chunk = alloc(size);
                 if (chunk != nullptr) {
-                    // std::cout << "Allocated " << size << " bytes." << std::endl;
+                    std::cout << "Allocated " << size << " bytes." << std::endl;
                 } else {
                     std::cerr << "Allocation failed for " << size << " bytes." << std::endl;
                 }
             }
         } else if (line == "dealloc") {
             if (!allocatedList.empty()) {
-                void* chunk = allocatedList.back().space;
-                bestFitDealloc(chunk);
+                void* chunk = allocatedList.back()->space;
+                dealloc(chunk);
                 // std::cout << "Deallocated memory." << std::endl;
             } else {
                 std::cerr << "No allocated chunks to deallocate." << std::endl;
@@ -71,14 +71,17 @@ int main(int argc, char* argv[]) {
 
     std::cout << "** Allocation Summary **" << std::endl;
     std::cout << std::endl;
-    for(auto it = allocatedList.begin(); it != allocatedList.end(); it++){
-        std::cout << "memory address: " << it->space << "," << " allocated space: " << it->total_size << "," << " space used: " << it->requested_size << std::endl;
+    for ( auto it = allocatedList.begin(); it != allocatedList.end(); it++){
+        std::cout << "memory address: " << (*it)->space << "," << " allocated space: " << (*it)->total_size << "," << " space used: " << (*it)->requested_size << std::endl;
     }
     std::cout << std::endl;
     std::cout << "** Free List Summary **" << std::endl;
     for(auto it = freeList.begin(); it != freeList.end(); it++){
-        std::cout << "memory address: " << it->space << "," << " allocated space: " << it->total_size << std::endl;
+        std::cout << "memory address: " << (*it)->space << "," << " allocated space: " << (*it)->total_size << std::endl;
     }
+
+    std::cout << "Total number of allocations: " << allocatedList.size() << std::endl;
+
 
     inputFile.close();
     return 0;

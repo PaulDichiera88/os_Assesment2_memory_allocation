@@ -22,8 +22,10 @@ extern std::list<Allocation> allocatedList;
 extern std::list<Allocation> freeList;
 
 // Function declarations
-void* firstFitAlloc(std::size_t chunk_size);
-void firstFitDealloc(void* chunk);
+void* alloc(std::size_t chunk_size);
+Allocation* firstFitSearch(std::size_t chunk_size);
+void dealloc(void* chunk);
 std::size_t findPartitionSize(std::size_t requested_size);
+
 
 #endif // FIRST_FIT_H

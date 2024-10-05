@@ -35,7 +35,7 @@ int main(int argc, char* argv[]) {
         if (line.rfind("alloc:", 0) == 0) {
             std::string size_str = line.substr(6);
             std::size_t size = std::stoul(size_str);
-            void* chunk = firstFitAlloc(size);
+            void* chunk = alloc(size);
             if (chunk != nullptr) {
                 // std::cout << "Allocated " << size << " bytes." << std::endl;
             } else {
@@ -44,7 +44,7 @@ int main(int argc, char* argv[]) {
         } else if (line == "dealloc") {
             if (!allocatedList.empty()) {
                 void* chunk = allocatedList.back().space;
-                firstFitDealloc(chunk);
+                dealloc(chunk);
                 // std::cout << "Deallocated memory." << std::endl;
             } else {
                 std::cerr << "No allocated chunks to deallocate." << std::endl;
