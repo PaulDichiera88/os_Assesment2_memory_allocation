@@ -5,6 +5,8 @@
 #include <filesystem>
 #include <list>
 
+bool isFileEmpty(const std::string& datasource);
+
 int main(int argc, char* argv[]) {
     std::cout << std::endl;
     std::cout << "Running: First Fit Memory Allocation" << std::endl;
@@ -12,7 +14,8 @@ int main(int argc, char* argv[]) {
     
 
     if (argc != 2) {
-        std::cerr << "Usage: <datafile>" << std::endl;
+        std::cerr << "Missing... <datafile>" << std::endl;
+        std::cout << "Program exiting" << std::endl;
         return EXIT_FAILURE;
     }
 
@@ -20,12 +23,20 @@ int main(int argc, char* argv[]) {
 
     if (!std::filesystem::exists(dataSource)) {
         std::cerr << "Data Source: Failed... Source file does not exist" << std::endl;
+        std::cout << "Program exiting" << std::endl;
         return EXIT_FAILURE;
     }
 
     std::ifstream inputFile(dataSource);
     if (!inputFile.is_open()) {
-        std::cerr << "Error: Could not open data source file " << dataSource << std::endl;
+        std::cerr << "Error: Could not open data source file: " << dataSource << std::endl;
+        std::cout << "Program exiting" << std::endl;
+        return EXIT_FAILURE;
+    }
+
+    if(isFileEmpty(dataSource)){
+        std::cout << "Data Source: Empty...Check data source is correct: " << dataSource << std::endl;
+        std::cout << "Program exiting" << std::endl;
         return EXIT_FAILURE;
     }
 
@@ -45,6 +56,7 @@ int main(int argc, char* argv[]) {
             } catch (const std::invalid_argument& e){
                 // handle error
                 std::cerr << "Invalid size format encountered in file data: " << size_str << std::endl;
+                std::cout << "Line skipped...Continuing" << std::endl;
                 valid = false;
             } catch (const std::out_of_range& e){
                 // handle error
@@ -86,4 +98,9 @@ int main(int argc, char* argv[]) {
 
     inputFile.close();
     return 0;
+}
+
+bool isFileEmpty(const std::string& datasource){
+    std::ifstream file(datasource);
+    return file.peek() == std::ifstream::traits_type::eof();
 }

@@ -1,10 +1,10 @@
-#ifndef BEST_FIT_H
-#define BEST_FIT_H
+#ifndef FIRST_FIT_H
+#define FIRST_FIT_H
 
-#include <cstddef> // for std::size_t
-#include <list>    // for std::list
+#include <cstddef> 
+#include <list>    
 
-// Allocation structure
+// allocation structure
 struct Allocation {
     std::size_t requested_size;  // size requested by the user
     std::size_t total_size;      // size of the allocation based on partition size
@@ -17,14 +17,14 @@ struct Allocation {
     }
 };
 
-// Expose the global lists as extern
-extern std::list<Allocation*> allocatedList;  // Use pointers now
-extern std::list<Allocation*> freeList;       // Use pointers now
+// global lists
+extern std::list<Allocation*> allocatedList;  
+extern std::list<Allocation*> freeList;       
 
-// Function declarations
+// function declarations
 void* alloc(std::size_t chunk_size);
-Allocation* bestFitSearch(std::size_t chunk_size);
+Allocation* firstFitSearch(std::size_t chunk_size);
 void dealloc(void* chunk);
 std::size_t findPartitionSize(std::size_t requested_size);
 
-#endif // BEST_FIT_H
+#endif // FIRST_FIT_H

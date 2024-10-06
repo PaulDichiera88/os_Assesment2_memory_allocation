@@ -5,13 +5,17 @@
 #include <filesystem>
 #include <list>
 
+bool isFileEmpty(const std::string& datasource);
+
 int main(int argc, char* argv[]) {
     std::cout << std::endl;
-    std::cout << "Running: Best Fit Memory Allocation" << std::endl;
+    std::cout << "Running: First Fit Memory Allocation" << std::endl;
     std::cout << "** Performing Checks **" << std::endl;
+    
 
     if (argc != 2) {
-        std::cerr << "Usage: <datafile>" << std::endl;
+        std::cerr << "Missing... <datafile>" << std::endl;
+        std::cout << "Program exiting" << std::endl;
         return EXIT_FAILURE;
     }
 
@@ -19,12 +23,20 @@ int main(int argc, char* argv[]) {
 
     if (!std::filesystem::exists(dataSource)) {
         std::cerr << "Data Source: Failed... Source file does not exist" << std::endl;
+        std::cout << "Program exiting" << std::endl;
         return EXIT_FAILURE;
     }
 
     std::ifstream inputFile(dataSource);
     if (!inputFile.is_open()) {
-        std::cerr << "Error: Could not open data source file " << dataSource << std::endl;
+        std::cerr << "Error: Could not open data source file: " << dataSource << std::endl;
+        std::cout << "Program exiting" << std::endl;
+        return EXIT_FAILURE;
+    }
+
+    if(isFileEmpty(dataSource)){
+        std::cout << "Data Source: Empty...Check data source is correct: " << dataSource << std::endl;
+        std::cout << "Program exiting" << std::endl;
         return EXIT_FAILURE;
     }
 
@@ -85,4 +97,9 @@ int main(int argc, char* argv[]) {
 
     inputFile.close();
     return 0;
+}
+
+bool isFileEmpty(const std::string& datasource){
+    std::ifstream file(datasource);
+    return file.peek() == std::ifstream::traits_type::eof();
 }
