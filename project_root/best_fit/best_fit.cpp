@@ -13,7 +13,6 @@ void* alloc(std::size_t chunk_size) {
     Allocation* selected_block = bestFitSearch(chunk_size);
 
     if (selected_block != nullptr) {
-        std::cout << "Best fit found: " << selected_block->total_size << " bytes, at address: " << selected_block->space << std::endl;
 
         void* allocated_space = selected_block->space;
 
@@ -25,11 +24,9 @@ void* alloc(std::size_t chunk_size) {
             // Remove the block from the free list after confirming it's valid
             auto it = std::find(freeList.begin(), freeList.end(), selected_block);
             if (it != freeList.end()) {
-                std::cout << "Removing block from free list: " << selected_block->space << std::endl;
                 freeList.erase(it);
             }
-            std::cout << "Allocating block: " << selected_block->space << std::endl;
-            std::cout << "Block of size " << chunk_size << " allocated at address: " << selected_block->space << std::endl;
+            
             return allocated_space;  // Return the space pointer
         } else {
             std::cerr << "Error: Unable to allocate memory. Space pointer is null." << std::endl;
@@ -58,7 +55,6 @@ void dealloc(void* chunk) {
             Allocation* freeChunk = *it;
             allocatedList.erase(it);
             freeList.push_back(freeChunk);
-            std::cout << "Pushed back to freeList: address " << freeChunk->space << ", size: " << freeChunk->total_size << std::endl;
             return;
         }
     }
@@ -76,16 +72,19 @@ std::size_t findPartitionSize(std::size_t requested_size) {
     return PARTITION_SIZES[sizeof(PARTITION_SIZES) / sizeof(PARTITION_SIZES[0]) - 1];
 }
 
-// Search for best fit
 Allocation* bestFitSearch(std::size_t chunk_size) {
     Allocation* best = nullptr;
+    std::size_t smallest_difference = std::numeric_limits<std::size_t>::max();
+
     for (auto& block : freeList) {
-        if (block->total_size >= chunk_size && (!best || block->total_size < best->total_size)) {
-            best = block;
+        if (block->total_size >= chunk_size) {
+            std::size_t difference = block->total_size - chunk_size;
+            if (difference < smallest_difference) {
+                smallest_difference = difference;
+                best = block;
+            }
         }
     }
-    if (best) {
-        std::cout << "Best fit found: " << best->total_size << " bytes, at address: " << best->space << std::endl;
-    }
+    
     return best;
 }

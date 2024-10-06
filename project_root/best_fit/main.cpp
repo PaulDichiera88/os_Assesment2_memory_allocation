@@ -6,10 +6,9 @@
 #include <list>
 
 int main(int argc, char* argv[]) {
-    std::cout << "** Best Fit Allocation **" << std::endl;
     std::cout << std::endl;
+    std::cout << "Running: Best Fit Memory Allocation" << std::endl;
     std::cout << "** Performing Checks **" << std::endl;
-    std::cout << std::endl;
 
     if (argc != 2) {
         std::cerr << "Usage: <datafile>" << std::endl;
@@ -28,6 +27,8 @@ int main(int argc, char* argv[]) {
         std::cerr << "Error: Could not open data source file " << dataSource << std::endl;
         return EXIT_FAILURE;
     }
+
+    std::cout << "Data Source...Opened Successfully" << std::endl;
 
     std::string line;
     std::size_t size;
@@ -53,7 +54,7 @@ int main(int argc, char* argv[]) {
             if(valid){
                 void* chunk = alloc(size);
                 if (chunk != nullptr) {
-                    std::cout << "Allocated " << size << " bytes." << std::endl;
+                    // std::cout << "Allocated " << size << " bytes." << std::endl;
                 } else {
                     std::cerr << "Allocation failed for " << size << " bytes." << std::endl;
                 }
@@ -69,8 +70,9 @@ int main(int argc, char* argv[]) {
         }
     }     
 
-    std::cout << "** Allocation Summary **" << std::endl;
+    std::cout << "Allocations...Complete" << std::endl;
     std::cout << std::endl;
+    std::cout << "** Allocation Summary **" << std::endl;
     for ( auto it = allocatedList.begin(); it != allocatedList.end(); it++){
         std::cout << "memory address: " << (*it)->space << "," << " allocated space: " << (*it)->total_size << "," << " space used: " << (*it)->requested_size << std::endl;
     }
@@ -79,9 +81,7 @@ int main(int argc, char* argv[]) {
     for(auto it = freeList.begin(); it != freeList.end(); it++){
         std::cout << "memory address: " << (*it)->space << "," << " allocated space: " << (*it)->total_size << std::endl;
     }
-
-    std::cout << "Total number of allocations: " << allocatedList.size() << std::endl;
-
+     std::cout << std::endl;
 
     inputFile.close();
     return 0;
